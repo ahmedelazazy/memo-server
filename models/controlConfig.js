@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var controlConfig = sequelize.define("controlConfig", {
+  var controlConfig = sequelize.define('controlConfig', {
     visibility: {
-      type: DataTypes.ENUM("hidden", "readonly", "editable", "required"),
+      type: DataTypes.ENUM('hidden', 'readonly', 'editable', 'required'),
       allowNull: false
     },
     config: { type: DataTypes.TEXT }

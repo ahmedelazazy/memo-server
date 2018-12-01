@@ -1,23 +1,23 @@
-"use strict";
+'use strict';
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.bulkInsert(
-      "templates",
+      'templates',
       [
         {
-          title: "Template 1",
-          description: "Template 1 desc",
+          title: 'Template 1',
+          description: 'Template 1 desc',
           UserId: 1
         },
         {
-          title: "Template 2",
-          description: "Template 2 desc",
+          title: 'Template 2',
+          description: 'Template 2 desc',
           UserId: 1
         },
         {
-          title: "Template 3",
-          description: "Template 3 desc",
+          title: 'Template 3',
+          description: 'Template 3 desc',
           UserId: 2
         }
       ],

@@ -1,12 +1,12 @@
 module.exports = (req, res, next) => {
   try {
-    if (req.method === "OPTIONS") {
+    if (req.method === 'OPTIONS') {
       return next();
     }
 
-    var userId = req.header("x-auth");
+    var userId = req.header('x-auth');
     if (!userId) {
-      throw new Error("Unauthorized");
+      throw new Error('Unauthorized');
     }
 
     req.userId = userId;

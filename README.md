@@ -71,10 +71,10 @@ We are using `.sequelizerc` setup change config path for migrations. You can rea
 
 ```js
 // .sequelizerc
-const path = require("path");
+const path = require('path');
 
 module.exports = {
-  config: path.resolve("config", "config.js")
+  config: path.resolve('config', 'config.js')
 };
 ```
 
@@ -92,7 +92,7 @@ Task.associate = function(models) {
   // Using additional options like CASCADE etc for demonstration
   // Can also simply do Task.belongsTo(models.User);
   Task.belongsTo(models.User, {
-    onDelete: "CASCADE",
+    onDelete: 'CASCADE',
     foreignKey: {
       allowNull: false
     }
@@ -133,21 +133,21 @@ you have to adjust the `bin/www` file to this:
 ```js
 #!/usr/bin/env node
 
-var app = require("../app");
-var debug = require("debug")("init:server");
-var http = require("http");
-var models = require("../models");
+var app = require('../app');
+var debug = require('debug')('init:server');
+var http = require('http');
+var models = require('../models');
 
-var port = normalizePort(process.env.PORT || "3000");
-app.set("port", port);
+var port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
 
 var server = http.createServer(app);
 
 // sync() will create all table if they doesn't exist in database
 models.sequelize.sync().then(function() {
   server.listen(port);
-  server.on("error", onError);
-  server.on("listening", onListening);
+  server.on('error', onError);
+  server.on('listening', onListening);
 });
 
 function normalizePort(val) {

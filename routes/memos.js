@@ -1,8 +1,8 @@
-var db = require("../models");
-var express = require("express");
+var db = require('../models');
+var express = require('express');
 var router = express.Router();
-var enums = require("./enums");
-var _ = require("lodash");
+var enums = require('./enums');
+var _ = require('lodash');
 
 const Notification = db.notification;
 const Memo = db.memo;
@@ -10,7 +10,7 @@ const Task = db.task;
 const Op = db.Sequelize.Op;
 
 //actions list
-router.post("/filter", async (req, res) => {
+router.post('/filter', async (req, res) => {
   try {
     let userId = req.userId;
     let filter = req.body.filter;
@@ -33,17 +33,14 @@ router.post("/filter", async (req, res) => {
         where: {
           userId,
           status: {
-            [Op.in]: [
-              enums.ActionStatus.completed_approved,
-              enums.ActionStatus.rejected
-            ]
+            [Op.in]: [enums.ActionStatus.completed_approved, enums.ActionStatus.rejected]
           }
         },
         include: [db.user, { model: db.memo, include: [db.user, db.task] }]
       }).map(el => el.get({ plain: true }));
 
       //   result = result;
-      result = _.uniqBy(result, "memoId");
+      result = _.uniqBy(result, 'memoId');
     }
 
     res.json(result);
@@ -53,7 +50,7 @@ router.post("/filter", async (req, res) => {
 });
 
 //memos list
-router.get("/mine", async (req, res) => {
+router.get('/mine', async (req, res) => {
   try {
     let userId = req.userId;
     let memos = await Memo.findAll({
@@ -68,12 +65,12 @@ router.get("/mine", async (req, res) => {
 });
 
 //memo details
-router.get("/:id", async (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
     let id = req.params.id;
     let userId = req.userId;
     let task = await Task.findOne({
-      where: { id, [Op.or]: [{ userId: userId }, { "$memo.userId$": userId }] },
+      where: { id, [Op.or]: [{ userId: userId }, { '$memo.userId$': userId }] },
       include: [
         db.user,
         {
@@ -88,7 +85,7 @@ router.get("/:id", async (req, res) => {
     }
 
     taskObj = task.get({ plain: true });
-    taskObj.memo.tasks = _.sortBy(taskObj.memo.tasks, ["order"]);
+    taskObj.memo.tasks = _.sortBy(taskObj.memo.tasks, ['order']);
 
     res.json(taskObj);
   } catch (error) {
@@ -97,7 +94,7 @@ router.get("/:id", async (req, res) => {
 });
 
 //new memo
-router.post("/", async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     let memo = req.body;
     let userId = req.userId;
@@ -108,7 +105,7 @@ router.post("/", async (req, res) => {
     if (memo.tasks && memo.tasks.length > 0) {
       let firstTask = memo.tasks.find(t => t.order == 0);
       if (!firstTask) {
-        return res.status(400).send("Cannot find order value.");
+        return res.status(400).send('Cannot find order value.');
       }
       firstTask.status = enums.ActionStatus.assigned;
       firstTask.dateOpened = new Date();
@@ -120,9 +117,9 @@ router.post("/", async (req, res) => {
 
     await Notification.create({
       userId: notificationTask.userId,
-      text: "A new memo is assigned to you",
-      details: "A new memo is assigned to you",
-      entity: "task",
+      text: 'A new memo is assigned to you',
+      details: 'A new memo is assigned to you',
+      entity: 'task',
       entityId: notificationTask.id,
       addedOn: new Date()
     });
@@ -134,7 +131,7 @@ router.post("/", async (req, res) => {
 });
 
 //update action
-router.post("/:id", async (req, res) => {
+router.post('/:id', async (req, res) => {
   try {
     let task = await Task.findOne({
       where: {
@@ -150,11 +147,7 @@ router.post("/:id", async (req, res) => {
     }
 
     let toBeAddedTaskList = req.body.tasks;
-    if (
-      toBeAddedTaskList &&
-      toBeAddedTaskList.length > 0 &&
-      req.body.status != enums.ActionStatus.rejected
-    ) {
+    if (toBeAddedTaskList && toBeAddedTaskList.length > 0 && req.body.status != enums.ActionStatus.rejected) {
       let currentTasks = task.memo.tasks;
 
       task.status = req.body.status;
@@ -188,30 +181,22 @@ router.post("/:id", async (req, res) => {
 
     await db.notification.create({
       userId: task.memo.userId,
-      text: "A new task is compeleted at your process",
-      details: "A new task is compeleted at your process",
-      entity: "task",
+      text: 'A new task is compeleted at your process',
+      details: 'A new task is compeleted at your process',
+      entity: 'task',
       entityId: task.id,
       addedOn: new Date()
     });
 
     if (task.status == enums.ActionStatus.rejected) {
-      await closeMemo(
-        task.memo,
-        enums.ActionStatus.rejected,
-        "Your memo is rejected"
-      );
+      await closeMemo(task.memo, enums.ActionStatus.rejected, 'Your memo is rejected');
       res.send();
     } else {
       let nextTask = await Task.findOne({
         where: { order: task.order + 1, memoId: task.memoId }
       });
       if (!nextTask) {
-        await closeMemo(
-          task.memo,
-          enums.ActionStatus.completed_approved,
-          "Your memo is completed"
-        );
+        await closeMemo(task.memo, enums.ActionStatus.completed_approved, 'Your memo is completed');
       } else {
         await nextTask.update({
           status: enums.ActionStatus.assigned,
@@ -220,9 +205,9 @@ router.post("/:id", async (req, res) => {
 
         await db.notification.create({
           userId: nextTask.userId,
-          text: "A new task is assigned to you",
-          details: "A new task is assigned to you",
-          entity: "task",
+          text: 'A new task is assigned to you',
+          details: 'A new task is assigned to you',
+          entity: 'task',
           entityId: task.id,
           addedOn: new Date()
         });
@@ -243,7 +228,7 @@ closeMemo = async (memo, status, message) => {
     userId: memo.userId,
     text: message,
     details: message,
-    entity: "memo",
+    entity: 'memo',
     entityId: memo.id,
     addedOn: new Date()
   });

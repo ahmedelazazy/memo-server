@@ -1,9 +1,9 @@
-"use strict";
+'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var control = sequelize.define("control", {
+  var control = sequelize.define('control', {
     label: { type: DataTypes.STRING, allowNull: false },
     order: { type: DataTypes.INTEGER },
-    type: { type: DataTypes.ENUM("text", "yes/no") },
+    type: { type: DataTypes.ENUM('text', 'yes/no') },
     config: { type: DataTypes.TEXT },
     controlUiId: { type: DataTypes.STRING }
   });

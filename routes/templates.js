@@ -1,5 +1,5 @@
-var models = require("../models");
-var express = require("express");
+var models = require('../models');
+var express = require('express');
 var router = express.Router();
 
 const Step = models.step;
@@ -7,7 +7,7 @@ const Control = models.control;
 const Section = models.section;
 const Op = models.Sequelize.Op;
 
-router.get("/", async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     var templates = await models.template.findAll({
       include: [{ model: models.step }]
@@ -18,7 +18,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/:id", async (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
     var id = req.params.id;
     var template = await models.template.findOne({
@@ -34,17 +34,13 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     var inputTemplate = req.body.template;
     inputTemplate.userId = req.userId;
-    inputTemplate.hasForm =
-      inputTemplate.sections && inputTemplate.sections.length > 0;
+    inputTemplate.hasForm = inputTemplate.sections && inputTemplate.sections.length > 0;
     var templateResult = await models.template.create(inputTemplate, {
-      include: [
-        { model: models.step },
-        { model: models.section, include: [{ model: models.control }] }
-      ]
+      include: [{ model: models.step }, { model: models.section, include: [{ model: models.control }] }]
     });
     var template = templateResult.get({ plain: true });
 
@@ -84,14 +80,10 @@ router.post("/", async (req, res) => {
 
             control.templateId = template.id;
 
-            let tempStep = template.steps.find(
-              s => s.stepUiId == step.stepUiId
-            );
+            let tempStep = template.steps.find(s => s.stepUiId == step.stepUiId);
             control.stepId = tempStep.id;
 
-            let tempControl = controls.find(
-              c => c.controlUiId == control.controlUiId
-            );
+            let tempControl = controls.find(c => c.controlUiId == control.controlUiId);
             control.controlId = tempControl.id;
 
             await ControlConfig.create(control);
@@ -106,22 +98,22 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/test", async (req, res) => {
+router.get('/test', async (req, res) => {
   try {
     var step1 = await Step.create({
-      title: "hello step 1",
+      title: 'hello step 1',
       userId: 1,
       templateId: 1
     });
     var step2 = await Step.create({
-      title: "hello step 2",
+      title: 'hello step 2',
       userId: 1,
       templateId: 1
     });
     let steps = [step1, step2];
 
     var control1 = await Control.create({
-      label: "Control 1",
+      label: 'Control 1',
       sectionId: 1
     });
 

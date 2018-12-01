@@ -1,6 +1,6 @@
-"use strict";
+'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var controlValue = sequelize.define("controlValue", {
+  var controlValue = sequelize.define('controlValue', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
