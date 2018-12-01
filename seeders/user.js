@@ -7,7 +7,7 @@ module.exports = {
 
     // Example:
     return queryInterface.bulkInsert(
-      'Users',
+      'users',
       [
         {
           name: 'User 1',
@@ -29,11 +29,5 @@ module.exports = {
     );
   },
 
-  down: (queryInterface, Sequelize) => {
-    // Add reverting commands here.
-    // Return a promise to correctly handle asynchronicity.
-
-    // Example:
-    return queryInterface.bulkDelete('users', null, {});
-  }
+  down: (queryInterface, Sequelize) => {}
 };

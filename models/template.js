@@ -1,18 +1,19 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var Template = sequelize.define('Template', {
+  var template = sequelize.define('template', {
     title: { type: DataTypes.STRING, allowNull: false },
     description: DataTypes.STRING,
-    hasForm: { type: DataTypes.ENUM('yes', 'no'), allowNull: false, defaultValue: 'no' }
+    hasForm: { type: DataTypes.BOOLEAN, defaultValue: 0 }
   });
 
-  Template.associate = function(models) {
-    models.Template.belongsTo(models.User);
-    models.Template.hasMany(models.Step);
-    models.Template.hasMany(models.Section);
-    models.Template.hasMany(models.Process);
-    models.Template.hasMany(models.Action);
+  template.associate = function(models) {
+    models.template.belongsTo(models.user);
+    models.template.hasMany(models.step);
+    models.template.hasMany(models.section);
+    models.template.hasMany(models.control);
+    models.template.hasMany(models.process);
+    models.template.hasMany(models.action);
   };
 
-  return Template;
+  return template;
 };

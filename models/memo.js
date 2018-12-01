@@ -1,9 +1,9 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var Memo = sequelize.define('Memo', {
+  var memo = sequelize.define('memo', {
     title: { type: DataTypes.STRING, allowNull: false },
     description: DataTypes.STRING,
-    dateOpened: { type: DataTypes.DATE, allowNull: false, defaultValue: sequelize.NOW },
+    dateOpened: { type: DataTypes.DATE, defaultValue: sequelize.NOW },
     dateClosed: { type: DataTypes.DATE },
     status: {
       type: DataTypes.ENUM('started', 'completed/approved', 'rejected'),
@@ -12,10 +12,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   });
 
-  Memo.associate = function(models) {
-    models.Memo.belongsTo(models.User);
-    models.Memo.hasMany(models.Task);
+  memo.associate = function(models) {
+    models.memo.belongsTo(models.user);
+    models.memo.hasMany(models.task);
   };
 
-  return Memo;
+  return memo;
 };

@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var Action = sequelize.define('Action', {
+  var action = sequelize.define('action', {
     dateOpened: { type: DataTypes.DATE },
     dateClosed: { type: DataTypes.DATE },
     comment: { type: DataTypes.TEXT },
@@ -11,12 +11,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   });
 
-  Action.associate = function(models) {
-    models.Action.belongsTo(models.Process);
-    models.Action.belongsTo(models.User);
-    models.Action.belongsTo(models.Template);
-    models.Action.belongsTo(models.Step);
+  action.associate = function(models) {
+    models.action.belongsTo(models.process);
+    models.action.belongsTo(models.user);
+    models.action.belongsTo(models.template);
+    models.action.belongsTo(models.step);
   };
 
-  return Action;
+  return action;
 };

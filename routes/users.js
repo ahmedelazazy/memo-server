@@ -1,43 +1,31 @@
-var models  = require('../models');
+var db = require('../models');
 var express = require('express');
-var router  = express.Router();
+var router = express.Router();
 
-router.post('/create', function(req, res) {
-  models.User.create({
-    username: req.body.username
-  }).then(function() {
-    res.redirect('/');
-  });
+router.get('/', async (req, res) => {
+  try {
+    let users = await db.user.findAll({ attributes: ['id', 'name', 'email'] });
+    res.json(users);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
 });
 
-router.get('/:user_id/destroy', function(req, res) {
-  models.User.destroy({
-    where: {
-      id: req.params.user_id
+router.post('/login', async (req, res) => {
+  try {
+    let email = req.body.email;
+    let password = req.body.password;
+    if (!email || !password) {
+      return res.status(400).send();
     }
-  }).then(function() {
-    res.redirect('/');
-  });
+    let user = await db.user.findOne({
+      where: { email, password },
+      attributes: ['id', 'name', 'email']
+    });
+    res.json(user);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
 });
-
-router.post('/:user_id/tasks/create', function (req, res) {
-  models.Task.create({
-    title: req.body.title,
-    UserId: req.params.user_id
-  }).then(function() {
-    res.redirect('/');
-  });
-});
-
-router.get('/:user_id/tasks/:task_id/destroy', function (req, res) {
-  models.Task.destroy({
-    where: {
-      id: req.params.task_id
-    }
-  }).then(function() {
-    res.redirect('/');
-  });
-});
-
 
 module.exports = router;

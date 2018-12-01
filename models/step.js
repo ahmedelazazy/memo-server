@@ -1,17 +1,18 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var Step = sequelize.define('Step', {
+  var step = sequelize.define('step', {
     title: { type: DataTypes.STRING, allowNull: false },
     description: DataTypes.STRING,
-    type: { type: DataTypes.ENUM('task', 'approval'), allowNull: false, defaultValue: 'task' },
-    order: DataTypes.INTEGER
+    type: { type: DataTypes.ENUM('task', 'approval'),  defaultValue: 'task' },
+    order: DataTypes.INTEGER,
+    stepUiId: DataTypes.STRING
   });
 
-  Step.associate = function(models) {
-    models.Step.belongsTo(models.User);
-    models.Step.belongsTo(models.Template);
-    models.Step.hasMany(models.Action);
+  step.associate = function(models) {
+    models.step.belongsTo(models.user);
+    models.step.belongsTo(models.template);
+    models.step.hasMany(models.action);
   };
 
-  return Step;
+  return step;
 };

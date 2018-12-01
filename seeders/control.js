@@ -2,11 +2,8 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    // user.addProject(project, { through: { status: 'started' } });
-
-    // console.log(Sequelize);
     return queryInterface.bulkInsert(
-      'Controls',
+      'controls',
       [
         {
           label: 'Control 1.1 @ Section 1',
@@ -29,13 +26,5 @@ module.exports = {
     );
   },
 
-  down: (queryInterface, Sequelize) => {
-    /*
-      Add reverting commands here.
-      Return a promise to correctly handle asynchronicity.
-
-      Example:
-      return queryInterface.bulkDelete('Person', null, {});
-    */
-  }
+  down: (queryInterface, Sequelize) => {}
 };

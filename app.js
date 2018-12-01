@@ -6,8 +6,13 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
+var authenticate = require('./middleware/authenticate');
 var users = require('./routes/users');
 var templates = require('./routes/templates');
+var processes = require('./routes/processes');
+var actions = require('./routes/actions');
+var notifications = require('./routes/notifications');
+var memos = require('./routes/memos');
 
 var app = express();
 
@@ -23,9 +28,24 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
-app.use('/users', users);
-app.use('/templates', templates);
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, authorization, x-auth'
+  );
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS');
+
+  next();
+});
+
+app.use('/api/', routes);
+app.use('/api/users', users);
+app.use('/api/templates', authenticate, templates);
+app.use('/api/processes', authenticate, processes);
+app.use('/api/actions', authenticate, actions);
+app.use('/api/notifications', authenticate, notifications);
+app.use('/api/memos', authenticate, memos);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

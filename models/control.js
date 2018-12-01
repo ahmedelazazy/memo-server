@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var Control = sequelize.define('Control', {
+  var control = sequelize.define('control', {
     label: { type: DataTypes.STRING, allowNull: false },
     order: { type: DataTypes.INTEGER },
     type: { type: DataTypes.ENUM('text', 'yes/no') },
@@ -8,9 +8,10 @@ module.exports = (sequelize, DataTypes) => {
     controlUiId: { type: DataTypes.STRING }
   });
 
-  Control.associate = function(models) {
-    models.Control.belongsTo(models.Section);
+  control.associate = function(models) {
+    models.control.belongsTo(models.section);
+    models.control.belongsTo(models.template);
   };
 
-  return Control;
+  return control;
 };

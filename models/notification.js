@@ -1,18 +1,18 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var Notification = sequelize.define('Notification', {
+  var notification = sequelize.define('notification', {
     text: { type: DataTypes.TEXT },
     details: { type: DataTypes.TEXT },
     entity: DataTypes.STRING,
     entityId: DataTypes.INTEGER,
     url: DataTypes.STRING,
-    isNew: { type: DataTypes.ENUM('yes', 'no'), allowNull: false, defaultValue: 'yes' },
-    addedOn: { type: DataTypes.DATE, allowNull: false, defaultValue: sequelize.NOW }
+    isNew: { type: DataTypes.BOOLEAN, defaultValue: 1 },
+    addedOn: { type: DataTypes.DATE, defaultValue: sequelize.NOW }
   });
 
-  Notification.associate = function(models) {
-    models.Notification.belongsTo(models.User);
+  notification.associate = function(models) {
+    models.notification.belongsTo(models.user);
   };
 
-  return Notification;
+  return notification;
 };

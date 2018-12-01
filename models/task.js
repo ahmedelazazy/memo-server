@@ -1,21 +1,22 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var Task = sequelize.define('Task', {
+  var task = sequelize.define('task', {
     dateOpened: { type: DataTypes.DATE },
     dateClosed: { type: DataTypes.DATE },
     comment: { type: DataTypes.TEXT },
-    addionalInfo: { type: DataTypes.TEXT },
+    additionalInfo: { type: DataTypes.TEXT },
     order: { type: DataTypes.INTEGER },
     status: {
       type: DataTypes.ENUM('pending', 'assigned', 'completed/approved', 'rejected', 'revoked'),
       defaultValue: 'pending'
-    }
+    },
+    type: { type: DataTypes.ENUM('task', 'approval'), defaultValue: 'task' }
   });
 
-  Task.associate = function(models) {
-    models.Task.belongsTo(models.Memo);
-    models.Task.belongsTo(models.User);
+  task.associate = function(models) {
+    models.task.belongsTo(models.memo);
+    models.task.belongsTo(models.user);
   };
 
-  return Task;
+  return task;
 };

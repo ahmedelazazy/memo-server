@@ -1,14 +1,14 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var Section = sequelize.define('Section', {
+  var section = sequelize.define('section', {
     label: { type: DataTypes.STRING, allowNull: false },
-    order: { type: DataTypes.INTEGER },
+    order: { type: DataTypes.INTEGER }
   });
 
-  Section.associate = function(models) {
-    models.Section.belongsTo(models.Template);
-    models.Section.hasMany(models.Control);
+  section.associate = function(models) {
+    models.section.belongsTo(models.template);
+    models.section.hasMany(models.control);
   };
 
-  return Section;
+  return section;
 };
