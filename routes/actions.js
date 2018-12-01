@@ -1,18 +1,23 @@
-var db = require('../models');
-var express = require('express');
+var db = require("../models");
+var express = require("express");
 var router = express.Router();
 
-var enums = require('./enums');
+var enums = require("./enums");
 
 const Op = db.Sequelize.Op;
 const Action = db.action;
 
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     let userId = req.userId;
     let actions = await Action.findAll({
       where: { userId },
-      include: [db.user, db.step, db.template, { model: db.process, include: [db.user, db.action] }]
+      include: [
+        db.user,
+        db.step,
+        db.template,
+        { model: db.process, include: [db.user, db.action] }
+      ]
     });
 
     res.json(actions);
@@ -21,7 +26,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.get('/:id', async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
     let userId = req.userId;
     let id = req.params.id;
@@ -52,15 +57,23 @@ router.get('/:id', async (req, res) => {
             {
               model: db.control,
               include: [db.section], //{ model: db.process, where: { id: plainAction.processId } }
-              through: { where: { visibility: { [Op.ne]: enums.FieldVisibility.hidden } } }
+              through: {
+                where: { visibility: { [Op.ne]: enums.FieldVisibility.hidden } }
+              }
             }
           ]
         },
         {
           model: db.template,
-          include: [{ model: db.step, include: [db.user] }, { model: db.section }]
+          include: [
+            { model: db.step, include: [db.user] },
+            { model: db.section }
+          ]
         },
-        { model: db.process, include: [db.user, { model: db.action, include: [db.user] }] }
+        {
+          model: db.process,
+          include: [db.user, { model: db.action, include: [db.user] }]
+        }
       ]
     });
 
@@ -72,14 +85,18 @@ router.get('/:id', async (req, res) => {
         ctr.controlValue = await db.controlValue.findOne({
           where: { controlId: ctr.id, processId: plainAction.processId }
         });
-        ctr.controlValue = ctr.controlValue ? ctr.controlValue.get({ plain: true }) : null;
+        ctr.controlValue = ctr.controlValue
+          ? ctr.controlValue.get({ plain: true })
+          : null;
       }
     }
 
     // action.step.controls.forEach(control => (control.controlValue = control.processes[0].controlValue));
 
     action.template.sections.forEach(section => {
-      section.controls = action.step.controls.filter(c => c.sectionId == section.id);
+      section.controls = action.step.controls.filter(
+        c => c.sectionId == section.id
+      );
     });
     action.step.sections = action.template.sections;
 
@@ -92,7 +109,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.post('/:id', async (req, res) => {
+router.post("/:id", async (req, res) => {
   try {
     let controlValues = req.body.controlValues;
 
@@ -105,26 +122,37 @@ router.post('/:id', async (req, res) => {
       return res.status(404).send();
     }
 
-    await action.update({ status: req.body.status, comment: req.body.comment, dateClosed: new Date() });
+    await action.update({
+      status: req.body.status,
+      comment: req.body.comment,
+      dateClosed: new Date()
+    });
 
     if (controlValues) {
       for (let i = 0; i < controlValues.length; i++) {
         const cv = controlValues[i];
-        await db.controlValue.update({ value: cv.value }, { where: { id: cv.id } });
+        await db.controlValue.update(
+          { value: cv.value },
+          { where: { id: cv.id } }
+        );
       }
     }
 
     await db.notification.create({
       userId: action.process.userId,
-      text: 'A new action is added to your process',
-      details: 'A new action is added to your process',
-      entity: 'action',
+      text: "A new action is added to your process",
+      details: "A new action is added to your process",
+      entity: "action",
       entityId: action.id,
       addedOn: new Date()
     });
 
     if (action.status == enums.ActionStatus.rejected) {
-      await closeProcess(action.process, enums.ActionStatus.rejected, 'Your process is rejected');
+      await closeProcess(
+        action.process,
+        enums.ActionStatus.rejected,
+        "Your process is rejected"
+      );
       res.send();
     } else {
       let nextAction = await Action.findOne({
@@ -134,16 +162,19 @@ router.post('/:id', async (req, res) => {
         await closeProcess(
           action.process,
           enums.ActionStatus.completed_approved,
-          'Your process is completed'
+          "Your process is completed"
         );
       } else {
-        await nextAction.update({ status: enums.ActionStatus.assigned, dateOpened: new Date() });
+        await nextAction.update({
+          status: enums.ActionStatus.assigned,
+          dateOpened: new Date()
+        });
 
         await db.notification.create({
           userId: nextAction.userId,
-          text: 'A new action is assigned to you',
-          details: 'A new action is assigned to you',
-          entity: 'action',
+          text: "A new action is assigned to you",
+          details: "A new action is assigned to you",
+          entity: "action",
           entityId: action.id,
           addedOn: new Date()
         });
@@ -164,7 +195,7 @@ closeProcess = async (process, status, message) => {
     userId: process.userId,
     text: message,
     details: message,
-    entity: 'process',
+    entity: "process",
     entityId: process.id,
     addedOn: new Date()
   });

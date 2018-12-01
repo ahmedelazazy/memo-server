@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 module.exports = (sequelize, DataTypes) => {
-  var notification = sequelize.define('notification', {
+  var notification = sequelize.define("notification", {
     text: { type: DataTypes.TEXT },
     details: { type: DataTypes.TEXT },
     entity: DataTypes.STRING,

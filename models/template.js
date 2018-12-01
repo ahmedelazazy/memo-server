@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 module.exports = (sequelize, DataTypes) => {
-  var template = sequelize.define('template', {
+  var template = sequelize.define("template", {
     title: { type: DataTypes.STRING, allowNull: false },
     description: DataTypes.STRING,
     hasForm: { type: DataTypes.BOOLEAN, defaultValue: 0 }

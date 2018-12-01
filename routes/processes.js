@@ -1,12 +1,12 @@
-var db = require('../models');
-var express = require('express');
+var db = require("../models");
+var express = require("express");
 var router = express.Router();
 
 const Template = db.template;
 const Process = db.process;
 const Notification = db.notification;
 
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     var userId = req.userId;
     var processes = await Process.findAll({
@@ -19,12 +19,12 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.post('/', async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     let process = req.body;
     process.userId = req.userId;
     process.dateOpened = new Date();
-    process.status = 'started';
+    process.status = "started";
 
     let template = await Template.findOne({
       where: { id: process.templateId },
@@ -41,13 +41,15 @@ router.post('/', async (req, res) => {
       });
     }
     let firstAction = process.actions.find(a => a.order == 0);
-    firstAction.status = 'assigned';
+    firstAction.status = "assigned";
     firstAction.dateOpened = new Date();
 
     let processResult = await Process.create(process, { include: [db.action] });
 
     if (template.hasForm) {
-      await processResult.addControls(template.controls, { through: { controlValue: null } });
+      await processResult.addControls(template.controls, {
+        through: { controlValue: null }
+      });
     }
 
     let processObj = processResult.get({ plain: true });
@@ -55,9 +57,9 @@ router.post('/', async (req, res) => {
 
     await Notification.create({
       userId: notificationAction.userId,
-      text: 'A new action is assigned to you',
-      details: 'A new action is assigned to you',
-      entity: 'action',
+      text: "A new action is assigned to you",
+      details: "A new action is assigned to you",
+      entity: "action",
       entityId: notificationAction.id,
       addedOn: new Date()
     });

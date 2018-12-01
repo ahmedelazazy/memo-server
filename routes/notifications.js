@@ -1,17 +1,17 @@
-var db = require('../models');
-var express = require('express');
+var db = require("../models");
+var express = require("express");
 var router = express.Router();
 
 const Template = db.template;
 const Process = db.process;
 const Notification = db.notification;
 
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     let userId = req.userId;
     let notifications = await Notification.findAll({
       where: { userId: userId },
-      order: [['id', 'DESC']],
+      order: [["id", "DESC"]],
       limit: 25
     });
     res.send(notifications);
@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.get('/new', async (req, res) => {
+router.get("/new", async (req, res) => {
   try {
     let userId = req.userId;
     let count = await Notification.count({
@@ -32,11 +32,14 @@ router.get('/new', async (req, res) => {
   }
 });
 
-router.get('/:id', async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
     let userId = req.userId;
     let id = req.params.id;
-    let result = await Notification.update({ isNew: false }, { where: { id, userId } });
+    let result = await Notification.update(
+      { isNew: false },
+      { where: { id, userId } }
+    );
 
     if (!result || !result[0]) {
       return res.status(400).send();

@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 module.exports = (sequelize, DataTypes) => {
-  var section = sequelize.define('section', {
+  var section = sequelize.define("section", {
     label: { type: DataTypes.STRING, allowNull: false },
     order: { type: DataTypes.INTEGER }
   });

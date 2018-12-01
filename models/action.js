@@ -1,13 +1,19 @@
-'use strict';
+"use strict";
 module.exports = (sequelize, DataTypes) => {
-  var action = sequelize.define('action', {
+  var action = sequelize.define("action", {
     dateOpened: { type: DataTypes.DATE },
     dateClosed: { type: DataTypes.DATE },
     comment: { type: DataTypes.TEXT },
     order: { type: DataTypes.INTEGER },
     status: {
-      type: DataTypes.ENUM('pending', 'assigned', 'completed/approved', 'rejected', 'revoked'),
-      defaultValue: 'pending'
+      type: DataTypes.ENUM(
+        "pending",
+        "assigned",
+        "completed/approved",
+        "rejected",
+        "revoked"
+      ),
+      defaultValue: "pending"
     }
   });
 
