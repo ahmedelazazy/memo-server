@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
     let notifications = await Notification.findAll({
       where: { userId: userId },
       order: [['id', 'DESC']],
-      limit: 25
+      limit: 50
     });
     res.send(notifications);
   } catch (error) {

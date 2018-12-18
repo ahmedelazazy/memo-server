@@ -26,7 +26,8 @@ router.post('/filter', async (req, res) => {
           userId,
           status: enums.ActionStatus.assigned
         },
-        include: [{ model: db.memo, include: [db.user, db.task] }]
+        include: [{ model: db.memo, include: [db.user, db.task] }],
+        order: [['dateOpened', 'DESC']]
       });
     } else if (filter == enums.MemoMode.inactive) {
       result = await Task.findAll({
@@ -36,7 +37,8 @@ router.post('/filter', async (req, res) => {
             [Op.in]: [enums.ActionStatus.completed_approved, enums.ActionStatus.rejected]
           }
         },
-        include: [db.user, { model: db.memo, include: [db.user, db.task] }]
+        include: [db.user, { model: db.memo, include: [db.user, db.task] }],
+        order: [['dateOpened', 'DESC']]
       }).map(el => el.get({ plain: true }));
 
       //   result = result;
@@ -55,7 +57,8 @@ router.get('/mine', async (req, res) => {
     let userId = req.userId;
     let memos = await Memo.findAll({
       where: { userId },
-      include: [db.user, db.task]
+      include: [db.user, db.task],
+      order: [['dateOpened', 'DESC']]
     });
 
     res.json(memos);

@@ -12,7 +12,8 @@ router.get('/', async (req, res) => {
     let userId = req.userId;
     let actions = await Action.findAll({
       where: { userId },
-      include: [db.user, db.step, db.template, { model: db.process, include: [db.user, db.action] }]
+      include: [db.user, db.step, db.template, { model: db.process, include: [db.user, db.action] }],
+      order: [['dateOpened', 'DESC']]
     });
 
     res.json(actions);
